@@ -35,16 +35,18 @@ def handle_message(event):
 
     print(query)
     print("🔥 query =", repr(query))
+
+    query_encoded = quote(f"%{query}%")
+    full_url = f"{SUPABASE_API_URL}?name=ilike.{query_encoded}"
+
+    print("🔍 full_url =", full_url)
+
     headers = {
         "apikey": SUPABASE_ANON_KEY,
         "Authorization": f"Bearer {SUPABASE_ANON_KEY}"
     }
 
-    params = {
-        "name": f"ilike.%{query}%"
-    }
-
-    r = requests.get(SUPABASE_API_URL, headers=headers, params=params)
+    r = requests.get(full_url, headers=headers)
     try:
         results = r.json()
     except Exception as e:
