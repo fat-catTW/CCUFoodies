@@ -43,9 +43,15 @@ def handle_message(event):
     }
 
     r = requests.get(SUPABASE_API_URL, headers=headers, params=params)
-    results = r.json()
+    try:
+        results = r.json()
+    except Exception as e:
+        print("🔥 JSON parse error:", e)
+        print("🔥 Raw response:", r.text)
+        results = []
 
-    if not results:
+    # 安全檢查結果是否為 list 且有東西
+    if not isinstance(results, list) or len(results) == 0:
         reply = TextSendMessage(text="找不到符合的店家 😢")
     else:
         restaurant = results[0]
