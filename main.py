@@ -65,7 +65,7 @@ def handle_message(event):
     else:
         restaurant = results[0]
         reply = TextSendMessage(
-            text=f"推薦你：{restaurant['name']}（{restaurant['category']}）\n評分：{restaurant['rating']}⭐\n地圖連結：{restaurant['map_url']}"
+            text=f"推薦你：{restaurant['name']}（{restaurant['category']}）\n評分：{restaurant['rating']}⭐\n地圖連結：{restaurant['url']}"
         )
 
     line_bot_api.reply_message(event.reply_token, reply)
