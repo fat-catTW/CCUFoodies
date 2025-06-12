@@ -106,7 +106,7 @@ def handle_message(event):
                             "action": {
                                 "type": "uri",
                                 "label": "👉 點我看地圖",
-                                "uri": restaurant["map_url"]
+                                "uri": restaurant["url"]
                             }
                         }
                     ],
