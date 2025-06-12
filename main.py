@@ -64,8 +64,55 @@ def handle_message(event):
         reply = TextSendMessage(text="找不到符合的店家 😢")
     else:
         restaurant = results[0]
-        reply = TextSendMessage(
-            text=f"推薦你：{restaurant['name']}（{restaurant['category']}）\n評分：{restaurant['rating']}⭐\n地圖連結：{restaurant['url']}"
+        reply = FlexSendMessage(
+            alt_text="推薦餐廳",
+            contents={
+                "type": "bubble",
+                "body": {
+                    "type": "box",
+                    "layout": "vertical",
+                    "spacing": "sm",
+                    "contents": [
+                        {
+                            "type": "text",
+                            "text": f"🍽 推薦你：{restaurant['name']}（{restaurant['category']}）",
+                            "wrap": True,
+                            "weight": "bold",
+                            "size": "md"
+                        },
+                        {
+                            "type": "text",
+                            "text": f"⭐ 評分：{restaurant['rating']}",
+                            "wrap": True,
+                            "size": "sm"
+                        },
+                        {
+                            "type": "text",
+                            "text": f"💰 價格：{restaurant['price']}",
+                            "wrap": True,
+                            "size": "sm"
+                        }
+                    ]
+                },
+                "footer": {
+                    "type": "box",
+                    "layout": "vertical",
+                    "spacing": "sm",
+                    "contents": [
+                        {
+                            "type": "button",
+                            "style": "link",
+                            "height": "sm",
+                            "action": {
+                                "type": "uri",
+                                "label": "👉 點我看地圖",
+                                "uri": restaurant["map_url"]
+                            }
+                        }
+                    ],
+                    "flex": 0
+                }
+            }
         )
 
     line_bot_api.reply_message(event.reply_token, reply)
