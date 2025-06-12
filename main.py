@@ -41,7 +41,7 @@ def handle_message(event):
     }
 
     params = {
-        "name": f"ilike.*{query}*"
+        "name": f"ilike.%{query}%"
     }
 
     r = requests.get(SUPABASE_API_URL, headers=headers, params=params)
