@@ -44,10 +44,14 @@ def handle_message(event):
 
     headers = {
         "apikey": SUPABASE_ANON_KEY,
-        "Authorization": f"Bearer {SUPABASE_ANON_KEY}"
+        "Authorization": f"Bearer {SUPABASE_ANON_KEY}",
+        "Prefer": "return=representation"
     }
 
     r = requests.get(full_url, headers=headers)
+    print("🔥 status code:", r.status_code)
+    print("🔥 response:", r.text)
+
     try:
         results = r.json()
     except Exception as e:
