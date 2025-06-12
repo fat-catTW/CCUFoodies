@@ -4,6 +4,7 @@ from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage, FlexSendMessage
 import requests
 import os
+from urllib.parse import quote
 
 app = Flask(__name__)
 
