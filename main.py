@@ -33,6 +33,7 @@ def callback():
 def handle_message(event):
     query = event.message.text.strip()
 
+    print(query)
     headers = {
         "apikey": SUPABASE_ANON_KEY,
         "Authorization": f"Bearer {SUPABASE_ANON_KEY}"
