@@ -236,7 +236,7 @@ def build_recommendation_flex(r):
                         "action": {
                             "type": "uri",
                             "label": "👉 點我看地圖",
-                            "uri": r["map_url"]
+                            "uri": r["url"]
                         }
                     }
                 ]
