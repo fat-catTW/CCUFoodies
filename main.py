@@ -147,17 +147,19 @@ def handle_postback(event):
   
     
     if data.startswith("價格"):
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text="你選擇了：" + data))
+
         if user_id in user_sessions:
             user_sessions[user_id]["price"] = data.replace("價格", "")
-            line_bot_api.reply_message(event.reply_token, get_rating_flex())
+            line_bot_api.reply_message(event.reply_token, messages=[
+                TextSendMessage(text="你選擇了：" + data),
+                get_rating_flex()
+            ])
         return
 
     if data.startswith("評分"):
-        line_bot_api.reply_message(event.reply_token, TextSendMessage(text="你選擇了：" + data))
         if user_id in user_sessions:
             user_sessions[user_id]["rating"] = data.replace("評分", "")
-            check_and_recommend(user_id, event.reply_token)
+            check_and_recommend(user_id, event.reply_token, data)
         return
 
 
@@ -166,7 +168,7 @@ if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
 
 
-def check_and_recommend(user_id, reply_token):
+def check_and_recommend(user_id, reply_token, rating):
     session = user_sessions.get(user_id)
     if not session:
         line_bot_api.reply_message(reply_token, TextSendMessage(text="請先輸入：抽 類別1 類別2...，來進行有條件的抽餐廳"))
@@ -196,7 +198,10 @@ def check_and_recommend(user_id, reply_token):
 
     restaurant = random.choice(results)
     flex = build_recommendation_flex(restaurant)
-    line_bot_api.reply_message(reply_token, flex)
+    line_bot_api.reply_message(reply_token, messages=[
+                TextSendMessage(text="你選擇了：" + rating),
+                flex
+            ])
 
 def build_supabase_url(filters):
     conditions = []
