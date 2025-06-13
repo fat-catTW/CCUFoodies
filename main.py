@@ -198,10 +198,16 @@ def check_and_recommend(user_id, reply_token, rating):
 
     restaurant = random.choice(results)
     flex = build_recommendation_flex(restaurant)
-    line_bot_api.reply_message(reply_token, messages=[
-                TextSendMessage(text="你選擇了：" + rating),
-                flex
-            ])
+
+    if(filters["rating_cond"] == None):
+        line_bot_api.reply_message(reply_token, messages=[
+                    flex
+                ])
+    else:
+        line_bot_api.reply_message(reply_token, messages=[
+                    TextSendMessage(text="你選擇了：" + rating),
+                    flex
+                ])
 
 def build_supabase_url(filters):
     conditions = []
