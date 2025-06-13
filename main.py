@@ -7,7 +7,7 @@ import requests
 import os
 from urllib.parse import quote
 import random
-from urllib.parse import quote
+
 
 app = Flask(__name__)
 
