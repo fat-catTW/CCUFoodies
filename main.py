@@ -168,7 +168,7 @@ if __name__ == "__main__":
 
 def check_and_recommend(user_id, reply_token):
     session = user_sessions.get(user_id)
-    if not session or not session.get("categories"):
+    if not session:
         line_bot_api.reply_message(reply_token, TextSendMessage(text="請先輸入：抽 類別1 類別2...，來進行有條件的抽餐廳"))
         return
 
