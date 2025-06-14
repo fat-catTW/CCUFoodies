@@ -179,6 +179,7 @@ def check_and_recommend(user_id, reply_token):
         "price_cond": None if session["price"] in [None, "不限"] else session["price"],
         "rating_cond": None if session["rating"] in [None, "不限"] else session["rating"]
     }
+    print(filters)
 
     url = build_supabase_url(filters)
     headers = {
