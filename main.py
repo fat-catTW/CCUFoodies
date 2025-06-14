@@ -159,7 +159,7 @@ def handle_postback(event):
     if data.startswith("評分"):
         if user_id in user_sessions:
             user_sessions[user_id]["rating"] = data.replace("評分", "")
-            check_and_recommend(user_id, event.reply_token, data)
+            check_and_recommend(user_id, event.reply_token)
         return
 
 
@@ -168,7 +168,7 @@ if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
 
 
-def check_and_recommend(user_id, reply_token, rating):
+def check_and_recommend(user_id, reply_token):
     session = user_sessions.get(user_id)
     if not session:
         line_bot_api.reply_message(reply_token, TextSendMessage(text="請先輸入：抽 類別1 類別2...，來進行有條件的抽餐廳"))
@@ -205,7 +205,7 @@ def check_and_recommend(user_id, reply_token, rating):
                 ])
     else:
         line_bot_api.reply_message(reply_token, messages=[
-                    TextSendMessage(text="你選擇了：" + rating),
+                    TextSendMessage(text="你選擇了：" + filters["rating_cond"]),
                     flex
                 ])
 
