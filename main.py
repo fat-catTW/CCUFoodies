@@ -219,7 +219,7 @@ def build_supabase_url(filters):
         rating_val = float(filters['rating_cond'])
         conditions.append(f"rating=gte.{rating_val}")
     if filters["price_cond"]:
-        conditions.append(f"price_range={filters['price_cond']}")
+        conditions.append(f"price={filters['price_cond']}")
     if not conditions:
         return SUPABASE_API_URL
     return f"{SUPABASE_API_URL}?and=(" + ",".join(conditions) + ")"
