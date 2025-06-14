@@ -215,7 +215,7 @@ def build_supabase_url(filters):
         category_conds = [f"category=eq.{quote(c)}" for c in filters["categories"]]
         conditions.append("or=(" + ",".join(category_conds) + ")")
     if filters["rating_cond"]:
-        conditions.append(f"rating={filters['rating_cond']}")
+        conditions.append(f"rating=gte.{filters['rating_cond']}")
     if filters["price_cond"]:
         conditions.append(f"price_range={filters['price_cond']}")
     if not conditions:
