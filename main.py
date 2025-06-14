@@ -182,6 +182,8 @@ def check_and_recommend(user_id, reply_token):
     print(filters)
 
     url = build_supabase_url(filters)
+
+    print(url)
     headers = {
         "apikey": SUPABASE_ANON_KEY,
         "Authorization": f"Bearer {SUPABASE_ANON_KEY}",
@@ -277,8 +279,8 @@ def get_price_flex():
                     {"type": "button", "style": "primary", "action": {"type": "postback", "label": "$200~400", "data": "價格$200~400"}},
                     {"type": "button", "style": "primary", "action": {"type": "postback", "label": "$400~600", "data": "價格$400~600"}},
                     {"type": "button", "style": "primary", "action": {"type": "postback", "label": "$600~800", "data": "價格$600~800"}},
-                    {"type": "button", "style": "secondary", "action": {"type": "postback", "label": "$800~1000", "data": "價格$800~1000"}},
-                    {"type": "button", "style": "secondary", "action": {"type": "postback", "label": "大於$1000", "data": "價格$>1000"}},
+                    {"type": "button", "style": "primary", "action": {"type": "postback", "label": "$800~1000", "data": "價格$800~1000"}},
+                    {"type": "button", "style": "primary", "action": {"type": "postback", "label": "大於$1000", "data": "價格$>1000"}},
                     {"type": "button", "style": "primary", "action": {"type": "postback", "label": "不限價格", "data": "價格不限"}}
                 ]
             }
