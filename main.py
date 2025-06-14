@@ -158,7 +158,7 @@ def handle_postback(event):
 
     if data.startswith("評分"):
         if user_id in user_sessions:
-            user_sessions[user_id]["rating"] =float(data.replace("評分", ""))
+            user_sessions[user_id]["rating"] =float(data.replace("評分$", ""))
             check_and_recommend(user_id, event.reply_token)
         return
 
@@ -221,7 +221,8 @@ def build_supabase_url(filters):
         rating_val = float(filters['rating_cond'])
         conditions.append(f"rating=gte.{rating_val}")
     if filters["price_cond"]:
-        conditions.append(f"price={filters['price_cond']}")
+        conditions.append(f"price=like.*{quote(filters['price_cond'])}*")
+
     if not conditions:
         return SUPABASE_API_URL
     return f"{SUPABASE_API_URL}?and=(" + ",".join(conditions) + ")"
