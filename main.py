@@ -225,7 +225,7 @@ def build_supabase_url(filters):
 
     if not conditions:
         return SUPABASE_API_URL
-    return f"{SUPABASE_API_URL}?and=(" + ",".join(conditions) + ")"
+    return f"{SUPABASE_API_URL}?" + "&".join(conditions)
 
 def build_recommendation_flex(r):
     return FlexSendMessage(
