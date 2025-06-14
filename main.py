@@ -177,7 +177,7 @@ def check_and_recommend(user_id, reply_token):
     filters = {
         "categories": session["categories"],
         "price_cond": None if session["price"] in [None, "不限"] else session["price"],
-        "rating_cond": None if session["rating"] in [None, "不限"] else float(session["rating"])
+        "rating_cond": None if session["rating"] in [None, "不限"] else session["rating"]
     }
     print(filters)
 
