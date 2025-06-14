@@ -158,7 +158,7 @@ def handle_postback(event):
 
     if data.startswith("評分"):
         if user_id in user_sessions:
-            user_sessions[user_id]["rating"] = data.replace("評分", "")
+            user_sessions[user_id]["rating"] =float(data.replace("評分", ""))
             check_and_recommend(user_id, event.reply_token)
         return
 
