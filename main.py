@@ -149,7 +149,7 @@ def handle_postback(event):
     if data.startswith("價格"):
 
         if user_id in user_sessions:
-            user_sessions[user_id]["price"] = data.replace("價格$", "")
+            user_sessions[user_id]["price"] = data.replace("價格", "")
             line_bot_api.reply_message(event.reply_token, messages=[
                 TextSendMessage(text="你選擇了：" + data),
                 get_rating_flex()
