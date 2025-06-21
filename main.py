@@ -1,12 +1,13 @@
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage, FlexSendMessage
+from linebot.models import MessageEvent, TextMessage, TextSendMessage, FlexSendMessage, LocationMessage
 from linebot.models.events import PostbackEvent
 import requests
 import os
 from urllib.parse import quote
 import random
+from supabase import create_client, Client
 
 
 app = Flask(__name__)
@@ -20,7 +21,7 @@ handler = WebhookHandler(LINE_CHANNEL_SECRET)
 
 SUPABASE_API_URL = "https://rqzntaosutboujcmnibw.supabase.co/rest/v1/restaurants"
 SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxem50YW9zdXRib3VqY21uaWJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTA0NTAsImV4cCI6MjA2NTIyNjQ1MH0.zLruC4wchcev23dFOATK9YpYHvfDAScYaj-nFV0MvPI"
-
+supabase: Client = create_client(SUPABASE_API_URL, SUPABASE_ANON_KEY)
 
 #暫存使用者查詢狀態
 user_sessions = {}  # {user_id: {categories: [...], price: ..., rating: ...}}
@@ -57,87 +58,30 @@ def handle_message(event):
         user_sessions[user_id] = {"categories": [], "price": None, "rating": None}
         check_and_recommend(user_id, event.reply_token)
         return
+    
+
 
     print("在MessageEvent沒做任何動作")
-    # query_encoded = quote(f"%{query}%")
-    # full_url = f"{SUPABASE_API_URL}?name=ilike.{query_encoded}"
 
-    # print("🔍 full_url =", full_url)
+@handler.add(MessageEvent, message=LocationMessage)
+def handle_location(event):
+    lat = event.message.latitude
+    lng = event.message.longitude
+    data = supabase.rpc("nearby_restaurants", {"lat": lat, "lng": lng}).execute().data
 
-    # headers = {
-    #     "apikey": SUPABASE_ANON_KEY,
-    #     "Authorization": f"Bearer {SUPABASE_ANON_KEY}",
-    #     "Prefer": "return=representation"
-    # }
+    print(f"lat: {lat}  lng:{lng}")
 
-    # r = requests.get(full_url, headers=headers)
-    # print("🔥 status code:", r.status_code)
-    # print("🔥 response:", r.text)
+    if not data:
+        reply = "附近 500 公尺內沒有找到店家喔！"
+    else:
+        reply = "這是你附近的店家：\n"
+        for shop in data:
+            reply += f"{shop['name']}（{shop['category']}）{shop['rating']}⭐ - {shop['price']}，約 {int(shop['distance'])} 公尺\n"
 
-    # try:
-    #     results = r.json()
-    # except Exception as e:
-    #     print("🔥 JSON parse error:", e)
-    #     print("🔥 Raw response:", r.text)
-    #     results = []
-
-    # # 安全檢查結果是否為 list 且有東西
-    # if not isinstance(results, list) or len(results) == 0:
-    #     reply = TextSendMessage(text="找不到符合的店家 😢")
-    # else:
-    #     restaurant = results[0]
-    #     reply = FlexSendMessage(
-    #         alt_text="推薦餐廳",
-    #         contents={
-    #             "type": "bubble",
-    #             "body": {
-    #                 "type": "box",
-    #                 "layout": "vertical",
-    #                 "spacing": "sm",
-    #                 "contents": [
-    #                     {
-    #                         "type": "text",
-    #                         "text": f"🍽 推薦你：{restaurant['name']}（{restaurant['category']}）",
-    #                         "wrap": True,
-    #                         "weight": "bold",
-    #                         "size": "md"
-    #                     },
-    #                     {
-    #                         "type": "text",
-    #                         "text": f"⭐ 評分：{restaurant['rating']}",
-    #                         "wrap": True,
-    #                         "size": "sm"
-    #                     },
-    #                     {
-    #                         "type": "text",
-    #                         "text": f"💰 價格：{restaurant['price']}",
-    #                         "wrap": True,
-    #                         "size": "sm"
-    #                     }
-    #                 ]
-    #             },
-    #             "footer": {
-    #                 "type": "box",
-    #                 "layout": "vertical",
-    #                 "spacing": "sm",
-    #                 "contents": [
-    #                     {
-    #                         "type": "button",
-    #                         "style": "link",
-    #                         "height": "sm",
-    #                         "action": {
-    #                             "type": "uri",
-    #                             "label": "👉 點我看地圖",
-    #                             "uri": restaurant["url"]
-    #                         }
-    #                     }
-    #                 ],
-    #                 "flex": 0
-    #             }
-    #         }
-    #     )
-
-    # line_bot_api.reply_message(event.reply_token, reply)
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=reply)
+    )
 
 
 @handler.add(PostbackEvent)
