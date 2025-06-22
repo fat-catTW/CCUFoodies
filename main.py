@@ -71,7 +71,7 @@ def handle_location(event):
     print(f"lat: {lat}  lng:{lng}")
     
     try:
-        result = supabase.rpc("nearby_restaurants_json", {"lat": lat, "lng": lng}).execute()
+        result = (supabase.rpc("nearby_restaurants_json", {"lat": lat, "lng": lng}).execute())
         print("Raw RPC result:", result.data)
         data = result.data
 
