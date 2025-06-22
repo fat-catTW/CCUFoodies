@@ -67,9 +67,10 @@ def handle_message(event):
 def handle_location(event):
     lat = event.message.latitude
     lng = event.message.longitude
+    print(f"lat: {lat}  lng:{lng}")
     data = supabase.rpc("nearby_restaurants", {"lat": lat, "lng": lng}).execute().data
 
-    print(f"lat: {lat}  lng:{lng}")
+    
 
     if not data:
         reply = "附近 500 公尺內沒有找到店家喔！"
