@@ -76,6 +76,7 @@ def handle_location(event):
         data = json.loads(result.data) if result.data else []
 
     except Exception as e:
+        print("Raw RPC result:", result.data)
         print("解析 RPC 回傳資料時出錯:", e)
         data = []
 
