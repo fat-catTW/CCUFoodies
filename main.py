@@ -20,9 +20,10 @@ LINE_CHANNEL_SECRET = '2344e18e0d06043a28bd67be2f0c7ac3'
 line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(LINE_CHANNEL_SECRET)
 
-SUPABASE_API_URL = "https://rqzntaosutboujcmnibw.supabase.co/rest/v1/restaurants"
+SUPABASE_API_RESTAURANTSTABLE_URL = "https://rqzntaosutboujcmnibw.supabase.co/rest/v1/restaurants"
+SUPABASE_API_BASIC_URL = "https://rqzntaosutboujcmnibw.supabase.co/rest/v1"
 SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxem50YW9zdXRib3VqY21uaWJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTA0NTAsImV4cCI6MjA2NTIyNjQ1MH0.zLruC4wchcev23dFOATK9YpYHvfDAScYaj-nFV0MvPI"
-supabase: Client = create_client(SUPABASE_API_URL, SUPABASE_ANON_KEY)
+supabase: Client = create_client(SUPABASE_API_BASIC_URL, SUPABASE_ANON_KEY)
 
 #暫存使用者查詢狀態
 user_sessions = {}  # {user_id: {categories: [...], price: ..., rating: ...}}
@@ -210,8 +211,8 @@ def build_supabase_url(filters):
 
 
     if not conditions:
-        return SUPABASE_API_URL
-    return f"{SUPABASE_API_URL}?and=(" + ",".join(conditions) + ")"
+        return SUPABASE_API_RESTAURANTSTABLE_URL
+    return f"{SUPABASE_API_RESTAURANTSTABLE_URL}?and=(" + ",".join(conditions) + ")"
 
 def build_recommendation_flex(r):
     return FlexSendMessage(
