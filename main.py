@@ -69,10 +69,18 @@ def handle_location(event):
     lat = event.message.latitude
     lng = event.message.longitude
     print(f"lat: {lat}  lng:{lng}")
-    result = supabase.rpc("nearby_restaurants_json", {"lat": lat, "lng": lng}).execute()
-    print(result)
-    json_str = result.data[0] if result.data else '[]'
-    data = json.loads(json_str)
+    
+    try:
+        result = supabase.rpc("nearby_restaurants_json", {"lat": lat, "lng": lng}).execute()
+        print("Raw RPC result:", result.data)
+        
+        json_str = result.data[0] if result.data else '[]'
+        print("Raw JSON string:", json_str)
+        data = json.loads(json_str)  # 注意：這裡要能被正確 parse
+
+    except Exception as e:
+        print("解析 RPC 回傳資料時出錯:", e)
+        data = []
 
     if not data:
         reply = "附近 500 公尺內沒有找到店家喔！"
