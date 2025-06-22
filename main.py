@@ -8,6 +8,7 @@ import os
 from urllib.parse import quote
 import random
 from supabase import create_client, Client
+import json
 
 
 app = Flask(__name__)
@@ -69,7 +70,9 @@ def handle_location(event):
     lng = event.message.longitude
     print(f"lat: {lat}  lng:{lng}")
     result = supabase.rpc("nearby_restaurants_json", {"lat": lat, "lng": lng}).execute()
-    data = result.data
+    print(result)
+    json_str = result.data[0] if result.data else '[]'
+    data = json.loads(json_str)
 
     if not data:
         reply = "附近 500 公尺內沒有找到店家喔！"
