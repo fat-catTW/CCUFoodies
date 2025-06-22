@@ -21,7 +21,7 @@ line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(LINE_CHANNEL_SECRET)
 
 SUPABASE_API_RESTAURANTSTABLE_URL = "https://rqzntaosutboujcmnibw.supabase.co/rest/v1/restaurants"
-SUPABASE_API_BASIC_URL = "https://rqzntaosutboujcmnibw.supabase.co/rest/v1"
+SUPABASE_API_BASIC_URL = "https://rqzntaosutboujcmnibw.supabase.co"
 SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxem50YW9zdXRib3VqY21uaWJ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NTA0NTAsImV4cCI6MjA2NTIyNjQ1MH0.zLruC4wchcev23dFOATK9YpYHvfDAScYaj-nFV0MvPI"
 supabase: Client = create_client(SUPABASE_API_BASIC_URL, SUPABASE_ANON_KEY)
 
