@@ -72,7 +72,7 @@ def handle_location(event):
     
     try:
         result = (supabase.rpc("nearby_restaurants_json", {"lat": lat, "lng": lng}).execute())
-        print("Raw RPC response:", response)
+        print("Raw RPC response:", result)
         print("Raw RPC data:", result.data)
 
         if result.data is not None and result.data != []: # 檢查是否為 None 且不為空列表
