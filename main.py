@@ -69,7 +69,7 @@ def handle_location(event):
     lng = event.message.longitude
     print(f"lat: {lat}  lng:{lng}")
     result = supabase.rpc("nearby_restaurants_json", {"lat": lat, "lng": lng}).execute()
-    data = result.data[0] if result.data else []  # ← 注意這裡！
+    data = result.data
 
     if not data:
         reply = "附近 500 公尺內沒有找到店家喔！"
