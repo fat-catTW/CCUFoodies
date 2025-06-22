@@ -69,32 +69,60 @@ def handle_location(event):
     lat = event.message.latitude
     lng = event.message.longitude
     print(f"lat: {lat}  lng:{lng}")
-    
-    try:
-        result = (supabase.rpc("nearby_restaurants_json", {"lat": lat, "lng": lng}).execute())
-        print("Raw RPC response:", result)
-        print("Raw RPC data:", result.data)
 
-        if result.data is not None and result.data != []: # 檢查是否為 None 且不為空列表
-            data = result.data
+    data = [] # 初始化 data
+    response_content = None # 用於儲存原始響應內容
+
+    try:
+        # 執行 RPC 呼叫
+        response = supabase.rpc("nearby_restaurants_json", {"lat": lat, "lng": lng}).execute()
+
+        # 打印原始響應對象和數據
+        print("Raw RPC response object:", response)
+        print("Raw RPC data:", response.data)
+
+        # 檢查 response.data，確保它是列表且不是 None
+        if response.data is not None and isinstance(response.data, list):
+            data = response.data
         else:
-            print("RPC returned None or empty data.")
-            data = [] # 確保 data 是空列表以便後續邏輯處
-    except Exception as e:
-        print("解析 RPC 回傳資料時出錯:", e)
+            print("RPC returned None or non-list data:", response.data)
+            data = []
+
+    # 捕獲更具體的 PostgREST APIError
+    # 這是你收到的錯誤類型
+    except Exception as e: # 如果不行，可以先用通用的 Exception 捕獲所有錯誤
+        print(f"解析 RPC 回傳資料時出錯: {e}")
+        # 如果捕獲到錯誤，嘗試訪問 response 對象的 content 屬性
+        # 注意: response 對象可能在錯誤發生時未被完全賦值或不同步
+        if isinstance(e, Client) and hasattr(e, 'response') and hasattr(e.response, 'content'):
+            response_content = e.response.content.decode('utf-8')
+            print(f"原始錯誤響應內容: {response_content}")
+        else:
+            print(f"無法從錯誤對象獲取原始響應內容: {e}")
         data = []
 
     if not data:
         reply = "附近 500 公尺內沒有找到店家喔！"
+        # 如果有原始錯誤內容，可以考慮在回覆中包含它，方便除錯
+        # if response_content:
+        #     reply += f"\n(內部錯誤詳情: {response_content[:100]}...)" # 限制長度避免訊息過長
     else:
         reply = "這是你附近的店家：\n"
         for shop in data:
-            reply += f"{shop['name']}（{shop['category']}）{shop['rating']}⭐ - {shop['price']}，約 {int(shop['distance'])} 公尺\n"
+            name = shop.get('name', '未知店家')
+            category = shop.get('category', '未知類別')
+            rating = shop.get('rating', 0.0)
+            price = shop.get('price', '未知價格')
+            distance = shop.get('distance', 0.0)
+            formatted_distance = int(round(distance))
+
+            reply += f"{name}（{category}）{rating}⭐ - {price}，約 {formatted_distance} 公尺\n"
 
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text=reply)
     )
+
 
 
 @handler.add(PostbackEvent)
