@@ -73,7 +73,7 @@ def handle_location(event):
     try:
         result = (supabase.rpc("nearby_restaurants_json", {"lat": lat, "lng": lng}).execute())
         print("Raw RPC result:", result.data)
-        data = result.data
+        data = json.loads(result.data) if result.data else []
 
     except Exception as e:
         print("解析 RPC 回傳資料時出錯:", e)
