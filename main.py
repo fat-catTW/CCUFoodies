@@ -297,7 +297,7 @@ def build_shop_bubble(shop):
         hero = ImageComponent(
             url=shop.get('image_url', "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nqyDXlob20SzumctedCefs9AZNW2NbCKsjRbc8NSyxfeu9ygtH5JZ9JlnFTX_26ocfgKJSOzPjhRrsD7n912INgSVfbuvBR1Rk5iV74SvohMqIqbndveIRvwwMLu0nRzcEzSnn_=w408-h306-k-no"),  # 圖片 URL（建議使用 https）
             size="full",
-            aspectRatio="20:13",
+            aspectRatio="1.51:1",
             aspectMode="cover",
             action=URIAction(
                 uri=shop.get('url', "https://maps.app.goo.gl/61xHY5MmeE8ZjXs76"),  # 點圖片可導向 Google Maps 或商店頁面
