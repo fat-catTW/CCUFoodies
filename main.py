@@ -255,13 +255,13 @@ def get_price_flex():
             },
             "footer": {
                 "type": "box", "layout": "vertical", "spacing": "sm", "contents": [
-                    {"type": "button", "style": "primary", "action": {"type": "postback", "label": "$100~200", "data": "價格$100~200"}},
-                    {"type": "button", "style": "primary", "action": {"type": "postback", "label": "$200~400", "data": "價格$200~400"}},
-                    {"type": "button", "style": "primary", "action": {"type": "postback", "label": "$400~600", "data": "價格$400~600"}},
-                    {"type": "button", "style": "primary", "action": {"type": "postback", "label": "$600~800", "data": "價格$600~800"}},
-                    {"type": "button", "style": "primary", "action": {"type": "postback", "label": "$800~1000", "data": "價格$800~1000"}},
-                    {"type": "button", "style": "primary", "action": {"type": "postback", "label": "大於$1000", "data": "價格$>1000"}},
-                    {"type": "button", "style": "primary", "action": {"type": "postback", "label": "不限價格", "data": "價格不限"}}
+                    {"type": "button", "style": "primary","color": "#4d94ff", "action": {"type": "postback", "label": "$100~200", "data": "價格$100~200"}},
+                    {"type": "button", "style": "primary","color": "#4d94ff", "action": {"type": "postback", "label": "$200~400", "data": "價格$200~400"}},
+                    {"type": "button", "style": "primary","color": "#4d94ff", "action": {"type": "postback", "label": "$400~600", "data": "價格$400~600"}},
+                    {"type": "button", "style": "primary","color": "#4d94ff", "action": {"type": "postback", "label": "$600~800", "data": "價格$600~800"}},
+                    {"type": "button", "style": "primary","color": "#4d94ff", "action": {"type": "postback", "label": "$800~1000", "data": "價格$800~1000"}},
+                    {"type": "button", "style": "primary","color": "#4d94ff", "action": {"type": "postback", "label": "大於$1000", "data": "價格$>1000"}},
+                    {"type": "button", "style": "primary","color": "#4d94ff", "action": {"type": "postback", "label": "不限價格", "data": "價格不限"}}
                 ]
             }
         }
@@ -281,11 +281,11 @@ def get_rating_flex():
             },
             "footer": {
                 "type": "box", "layout": "vertical", "spacing": "sm", "contents": [
-                    {"type": "button", "style": "primary", "action": {"type": "postback", "label": "⭐ 1.0↑", "data": "評分1.0"}},
-                    {"type": "button", "style": "primary", "action": {"type": "postback", "label": "⭐ 2.0↑", "data": "評分2.0"}},
-                    {"type": "button", "style": "primary", "action": {"type": "postback", "label": "⭐ 3.0↑", "data": "評分3.0"}},
-                    {"type": "button", "style": "primary", "action": {"type": "postback", "label": "⭐ 4.0↑", "data": "評分4.0"}},
-                    {"type": "button", "style": "secondary", "action": {"type": "postback", "label": "不限評分", "data": "評分不限"}}
+                    {"type": "button", "style": "primary","color": "#4d94ff","action": {"type": "postback", "label": "⭐ 1.0↑", "data": "評分1.0"}},
+                    {"type": "button", "style": "primary","color": "#4d94ff","action": {"type": "postback", "label": "⭐ 2.0↑", "data": "評分2.0"}},
+                    {"type": "button", "style": "primary","color": "#4d94ff","action": {"type": "postback", "label": "⭐ 3.0↑", "data": "評分3.0"}},
+                    {"type": "button", "style": "primary","color": "#4d94ff","action": {"type": "postback", "label": "⭐ 4.0↑", "data": "評分4.0"}},
+                    {"type": "button", "style": "secondary","color": "#4d94ff","action": {"type": "postback", "label": "不限評分", "data": "評分不限"}}
                 ]
             }
         }
@@ -320,6 +320,7 @@ def build_shop_bubble(shop):
             contents=[
                 ButtonComponent(
                     style="primary",
+                    color="#4d94ff",
                     action=URIAction(
                         label="前往 Google 地圖",
                         uri=shop.get('url', "https://maps.app.goo.gl/61xHY5MmeE8ZjXs76")
