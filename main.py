@@ -1,7 +1,7 @@
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage, FlexSendMessage, LocationMessage
+from linebot.models import MessageEvent, TextMessage, TextSendMessage, FlexSendMessage, LocationMessage, CarouselContainer, BubbleContainer, TextComponent, BoxComponent, ButtonComponent, URIAction, ImageComponent
 from linebot.models.events import PostbackEvent
 import requests
 import os
@@ -84,7 +84,7 @@ def handle_location(event):
 
         # 檢查 response.data，確保它是列表且不是 None
         if response.data is not None and isinstance(response.data, list):
-            data = response.data
+            data = response.data[:10]  # 只取前 10 筆
         else:
             print("RPC returned None or non-list data:", response.data)
             data = []
@@ -103,26 +103,18 @@ def handle_location(event):
         data = []
 
     if not data:
-        reply = "附近 500 公尺內沒有找到店家喔！"
-        # 如果有原始錯誤內容，可以考慮在回覆中包含它，方便除錯
-        # if response_content:
-        #     reply += f"\n(內部錯誤詳情: {response_content[:100]}...)" # 限制長度避免訊息過長
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text="附近 500 公尺內沒有找到店家喔！")
+        )
     else:
-        reply = "這是你附近的店家：\n"
-        for shop in data:
-            name = shop.get('name', '未知店家')
-            category = shop.get('category', '未知類別')
-            rating = shop.get('rating', 0.0)
-            price = shop.get('price', '未知價格')
-            distance = shop.get('distance', 0.0)
-            formatted_distance = int(round(distance))
 
-            reply += f"{name}（{category}）{rating}⭐ - {price}，約 {formatted_distance} 公尺\n"
-
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=reply)
-    )
+        bubbles = [build_shop_bubble(shop) for shop in data[:10]]  # 最多取前 10 家
+        carousel = CarouselContainer(contents=bubbles)
+        line_bot_api.reply_message(
+            event.reply_token,
+            FlexSendMessage(alt_text="附近的店家", contents=carousel)
+        )
 
 
 
@@ -299,6 +291,43 @@ def get_rating_flex():
         }
     )
 
+
+def build_shop_bubble(shop):
+    return BubbleContainer(
+        hero = ImageComponent(
+            url=shop.get('image_url', "https://lh3.googleusercontent.com/gps-cs-s/AC9h4nqyDXlob20SzumctedCefs9AZNW2NbCKsjRbc8NSyxfeu9ygtH5JZ9JlnFTX_26ocfgKJSOzPjhRrsD7n912INgSVfbuvBR1Rk5iV74SvohMqIqbndveIRvwwMLu0nRzcEzSnn_=w408-h306-k-no"),  # 圖片 URL（建議使用 https）
+            size="full",
+            aspectRatio="20:13",
+            aspectMode="cover",
+            action=URIAction(
+                uri=shop.get('url', "https://maps.app.goo.gl/61xHY5MmeE8ZjXs76"),  # 點圖片可導向 Google Maps 或商店頁面
+                label="查看地圖"
+            )
+        ),
+        body=BoxComponent(
+            layout="vertical",
+            contents=[
+                TextComponent(text=shop.get("name", "未知店家"), weight="bold", size="lg"),
+                TextComponent(text=f"分類：{shop.get('category', '未知')}", size="sm", color="#666666"),
+                TextComponent(text=f"評分：{shop.get('rating', 0)}⭐", size="sm", color="#666666"),
+                TextComponent(text=f"價格：{shop.get('price', '未知')}", size="sm", color="#666666"),
+                TextComponent(text=f"距離：約 {int(shop.get('distance', 0))} 公尺", size="sm", color="#666666"),
+                
+            ]
+        ),
+        footer=BoxComponent(
+            layout="vertical",
+            contents=[
+                ButtonComponent(
+                    style="primary",
+                    action=URIAction(
+                        label="前往 Google 地圖",
+                        uri=shop.get('url', "https://maps.app.goo.gl/61xHY5MmeE8ZjXs76")
+                    )
+                )
+            ]
+        )
+    )
 
 
 
