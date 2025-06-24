@@ -285,7 +285,7 @@ def get_rating_flex():
                     {"type": "button", "style": "primary","color": "#4d94ff","action": {"type": "postback", "label": "⭐ 2.0↑", "data": "評分2.0"}},
                     {"type": "button", "style": "primary","color": "#4d94ff","action": {"type": "postback", "label": "⭐ 3.0↑", "data": "評分3.0"}},
                     {"type": "button", "style": "primary","color": "#4d94ff","action": {"type": "postback", "label": "⭐ 4.0↑", "data": "評分4.0"}},
-                    {"type": "button", "style": "secondary","color": "#4d94ff","action": {"type": "postback", "label": "不限評分", "data": "評分不限"}}
+                    {"type": "button", "style": "primary","color": "#4d94ff","action": {"type": "postback", "label": "不限評分", "data": "評分不限"}}
                 ]
             }
         }
