@@ -120,7 +120,7 @@ def handle_message(event):
                 for r in results
             )
 
-        print("RAG:" + {RAGData})
+        print(f"RAG:{RAGData}")
 
         response = client.responses.create(
             model="gpt-4.1-nano-2025-04-14",
