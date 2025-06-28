@@ -59,13 +59,13 @@ def handle_message(event):
         user_sessions[user_id] = {"categories": categories, "price": None, "rating": None}
         line_bot_api.reply_message(event.reply_token, get_price_flex())
         return
-
-    if query == "抽":
+    
+    elif query == "抽":
         user_sessions[user_id] = {"categories": [], "price": None, "rating": None}
         check_and_recommend(user_id, event.reply_token)
         return
     
-    if query == "使用說明":
+    elif query == "使用說明":
         line_bot_api.reply_message(
             event.reply_token,
             TextSendMessage(text=""" 
@@ -90,19 +90,50 @@ def handle_message(event):
 發現新店了嗎? 快和大家分享!!
             """)
             )
-    
-    print(f"User ask: {query}")
-    response = client.responses.create(
-        model="gpt-4.1-nano-2025-04-14",
-        instructions="""你是一個嘉義的美食專家，專門幫助中正的學生們尋找嘉義的美味。
-根據使用者的需求，回答他們的問題。
-你和使用者之間的對話只能和嘉義美食相關。 如果使用者問了一個和美食不相關的問題˙，那就跟他說: 抱歉 我只知道和嘉義美食相關的問題，你的問題我沒辦法回答。 
-""",
-        input=query,
-    )
+    else:
+        print(f"User ask: {query}")
 
-    print(response.output_text)
-    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=response.output_text))
+        response = client.embeddings.create(
+            model="text-embedding-3-small",
+            input=query,
+            encoding_format="float"
+        )
+        
+        user_vector = response.data[0].embedding
+        
+
+        response = supabase.rpc("match_restaurants_vector", {
+            "query_embedding": user_vector,
+            "threshold": 0.75
+        }).execute()
+
+        results = response.data# 回傳的是最多五筆、且 similarity > 0.75 的資料
+
+        print(results)
+
+        RAGData = ""
+
+        if results:
+            RAGData = "參考資料:"
+            RAGData += "\n".join(
+                f"{r['name']}，{r['category']}，評分{r['rating']}，價格{r['price']}"
+                for r in results
+            )
+
+        print("RAG:" + {RAGData})
+
+        response = client.responses.create(
+            model="gpt-4.1-nano-2025-04-14",
+            instructions=f"""你是一個嘉義的美食專家，專門幫助中正的學生們尋找嘉義的美味。
+    根據使用者的需求，回答他們的問題。
+    你和使用者之間的對話只能和嘉義美食相關。 如果使用者問了一個和美食不相關的問題˙，那就跟他說: 抱歉 我只知道和嘉義美食相關的問題，你的問題我沒辦法回答。 
+    {RAGData}
+    """,
+            input=query,
+        )
+
+        print(response.output_text)
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text=response.output_text))
 
     print("在MessageEvent沒做任何動作")
 
