@@ -91,12 +91,14 @@ def handle_message(event):
             """)
             )
     
+    print(f"User ask: {query}")
     response = client.responses.create(
         model="gpt-4.1-nano-2025-04-14",
         instructions="Talk like a pirate.",
         input="Are semicolons optional in JavaScript?",
     )
 
+    print(response.output_text)
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=response.output_text))
 
     print("在MessageEvent沒做任何動作")
