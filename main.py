@@ -94,8 +94,11 @@ def handle_message(event):
     print(f"User ask: {query}")
     response = client.responses.create(
         model="gpt-4.1-nano-2025-04-14",
-        instructions="Talk like a pirate.",
-        input="Are semicolons optional in JavaScript?",
+        instructions="""你是一個嘉義的美食專家，專門幫助中正的學生們尋找嘉義的美味。
+根據使用者的需求，回答他們的問題。
+你和使用者之間的對話只能和嘉義美食相關。 如果使用者問了一個和美食不相關的問題˙，那就跟他說: 抱歉 我只知道和嘉義美食相關的問題，你的問題我沒辦法回答。 
+""",
+        input=query,
     )
 
     print(response.output_text)
